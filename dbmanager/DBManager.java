@@ -87,7 +87,7 @@ public class DBManager{
 		return false;
 	}
 	public static boolean cadastrar(int uType, String nome, String conta, String senha){
-		String sql = "insert into " + ((uType == GERENTE) ? "gerente" : "cliente") + "(nome,conta,senha) values('"+nome+"',"+conta+","+senha+")";
+		String sql = "insert into " + ((uType == GERENTE) ? "gerente" : "cliente") + "(nome,conta,senha) values('"+nome+"',"+conta+","+senha+",1)";
 		try{
 			connect();
 			stm.execute(sql);
@@ -113,5 +113,19 @@ public class DBManager{
 			return true;
 		}catch(SQLException e){}
 		return false;
+	}
+	public static String listar(){
+		try{
+			connect();
+			String sql = "select * from cliente";
+			ResultSet res = stm.executeQuery(sql);
+			sql = "";
+			while(res.next()){
+				sql += res.getString(0) + " | " + res.getString(2) + " | " + (res.getString(3).equals("1") ? "+" : "-")+"\n";
+			}
+			close();
+			return sql;
+		}catch(SQLException e){}
+		return null;
 	}
 }

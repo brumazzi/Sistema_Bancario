@@ -8,13 +8,15 @@ public class Gerente{
 	public static void main(String args[]) throws IOException{
 		Socket conn;// = new Socket("127.0.0.1", 8001);
 		Scanner scan = new Scanner(System.in);
-		Scanner in = new Scanner(conn.getInputStream());
-		PrintStream out = new PrintStream(conn.getOutputStream());
+		Scanner in;// = new Scanner(conn.getInputStream());
+		PrintStream out;// = new PrintStream(conn.getOutputStream());
 		String ac = null;
 		boolean on;
 
 		while(true){
 			conn = new Socket("127.0.0.1", 8002);
+			in = new Scanner(conn.getInputStream());
+			out = new PrintStream(conn.getOutputStream());
 			System.out.print("Conta: ");
 			String conta = scan.nextLine();
 			System.out.print("Senha: ");
@@ -53,6 +55,8 @@ public class Gerente{
 					case "cadastrar":
 						System.out.print("Nome: ");
 						out.println(scan.nextLine());
+						System.out.print("Conta: ");
+						out.println(scan.nextLine());
 						System.out.print("Senha: ");
 						out.println(scan.nextLine());
 						break;
@@ -66,7 +70,8 @@ public class Gerente{
 						break;
 				}
 
-				while(ac = in.nextLine()){
+				while(in.hasNextLine()){
+					ac = in.nextLine();
 					if(ac.equals("-"))
 						System.out.println("Erro ao efetuar a ação");
 					else if(ac.equals("+"))
