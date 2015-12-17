@@ -1,0 +1,31 @@
+-Tempo total					|≃5,2d|
+-Banco de dados					|≃7:10h|
+	*Cadastrar cliente			|30m|
+	*Listar Cliente				|31m|
+	*Autenticar login			|1h|
+	*Ativar/Desativar Cliente		|10m|
+	*Depositar				|2h|
+	*Sacar					|1:30h|
+	*Saldo					|25m|
+	*Extrato				|1h|
+-Área do cliente (Caixa)			|≃4:40h|
+	*Enviar dados por Socket		|2:20h|
+	*Receber dados por Socket		|2:20h|
+-Área do gerente (Controle)			|≃4:42h|
+	*Enviar dados por Socket		|2:21h|
+	*Receber dados por Socket		|2:21h|
+-Servidor					|≃3,5d|
+	*Aceitar Cliente			|1,5d|
+	*Aceitar Gerente			|2d|
+-Threads					|≃1d|
+	*Threads de Cliente			|≃7:00h|
+		#Efetuar saque			|1:30h|
+		#Efetuar deposito		|1:30h|
+		#Mostrar saldo			|1:00h|
+		#Mostrar extrato		|2:00h|
+	*Threads de Gerente			|≃13:00h|
+		#Cadastrar Cliente		|3:00h|
+		#Desativar/Ativar Cliente	|2:00h|	
+		#Listar Clientes		|1:30h|
+		#Listar Caixas			|3:00h|
+		#Desativar/Ativar Caixas	|2:30h|

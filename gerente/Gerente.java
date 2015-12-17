@@ -1,10 +1,10 @@
-package caixa;
+package gerente;
 
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
 
-public class Caixa{
+public class Gerente{
 	public static void main(String args[]) throws IOException{
 		Socket conn;// = new Socket("127.0.0.1", 8001);
 		Scanner scan = new Scanner(System.in);
@@ -14,7 +14,7 @@ public class Caixa{
 		boolean on;
 
 		while(true){
-			conn = new Socket("127.0.0.1", 8001);
+			conn = new Socket("127.0.0.1", 8002);
 			System.out.print("Conta: ");
 			String conta = scan.nextLine();
 			System.out.print("Senha: ");
@@ -26,12 +26,15 @@ public class Caixa{
 			on = in.nextLine().equals("+") ? true : false;
 			while(on){
 				System.out.println("---------------------");
-				System.out.println("---Menu de Usuário---");
+				System.out.println("---Menu de Gerente---");
 				System.out.println("---------------------");
-				System.out.println("*saque");
-				System.out.println("*deposito");
-				System.out.println("*saldo");
-				System.out.println("*extrato");
+				System.out.println("*caixas (lista caixas)");
+				System.out.println("*fechar (fecha um caixa)");
+				System.out.println("*abrir (abre um caixa)");
+				System.out.println("*clientes (lista clientes)");
+				System.out.println("*cadastrar (cadastra cliente)");
+				System.out.println("*inativar (inativa cliente)");
+				System.out.println("*ativar (ativa cliente)");
 				System.out.println("*sair\n\n");
 				System.out.println("->");
 
@@ -41,24 +44,24 @@ public class Caixa{
 				out.println(ac);
 
 				switch(ac){
-					case "saque":
-						System.out.print("Valor: ");
+					case "abrir":
+						System.out.print("Digite o numero do caixa: ");
+						out.println(scan.nextLine());
+						break;
+					case "fechar":
+						System.out.print("Digite o numero do caixa: ");
+					case "cadastrar":
+						System.out.print("Nome: ");
 						out.println(scan.nextLine());
 						System.out.print("Senha: ");
 						out.println(scan.nextLine());
 						break;
-					case "deposito:
-						System.out.print("Valor: ");
-						out.println(scan.nextLine());
-						System.out.print("Senha: ");
+					case "inativar":
+						System.out.print("Digite a conta do cliente: ");
 						out.println(scan.nextLine());
 						break;
-					case "saldo":
-						System.out.print("Senha: ");
-						out.println(scan.nextLine());
-						break;
-					case "extrato":
-						System.out.print("Senha: ");
+					case "ativar":
+						System.out.print("Digite a conta do cliente: ");
 						out.println(scan.nextLine());
 						break;
 				}
