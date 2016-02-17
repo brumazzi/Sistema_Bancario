@@ -24,6 +24,9 @@ class CaixaThread implements Runnable{
 	}
 
 	public void run(){
+		this.comman();
+	}
+	public synchronized void comman(){
 		boolean ativo = false;
 		Scanner s = null;
 		try{
@@ -91,6 +94,9 @@ class ControleThread implements Runnable{
 	}
 
 	public void run(){
+		this.comman();
+	}
+	public synchronized void comman(){
 		boolean ativo = false;
 		String caixas;
 		Scanner s = null;
