@@ -10,7 +10,7 @@ public class DBManager{
 	public static int GERENTE = 2;
 
 	public static boolean connect() throws SQLException{
-		conn = DriverManager.getConnection("jdbc:mysql://localhost/banco","root","daniel21");
+		conn = DriverManager.getConnection("jdbc:mysql://myhost/banco","root","daniel21");
 		stm = conn.createStatement();
 		return true;
 	}
