@@ -52,6 +52,8 @@ public class Gerente{
 						break;
 					case "fechar":
 						System.out.print("Digite o numero do caixa: ");
+                                                out.println(scan.nextLine());
+                                                break;
 					case "cadastrar":
 						System.out.print("Nome: ");
 						out.println(scan.nextLine());
@@ -70,15 +72,17 @@ public class Gerente{
 						break;
 				}
 
-				while(in.hasNextLine()){
+				//while(in.hasNextLine()){
 					ac = in.nextLine();
+                                        ac = ac.replace("**", "\n");
 					if(ac.equals("-"))
 						System.out.println("Erro ao efetuar a ação");
 					else if(ac.equals("+"))
 						System.out.println("Ação efetuada com sucesso!");
 					else
 						System.out.println(ac);
-				}
+                                //        ac = in.nextLine();
+				//}
 			}
 			conn.close();
 		}

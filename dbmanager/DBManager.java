@@ -2,6 +2,7 @@ package dbmanager;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class DBManager{
 	public static Connection conn = null;
@@ -36,28 +37,29 @@ public class DBManager{
 	public static String extrato(String conta, String senha){
 		try{
 			connect();
-			String sql = "select valor, data from extrato inner join cliente on cliente.id = extrato.cliente where conta = " + conta + " senha = " + senha;
+			String sql = "select extrato.valor, extrato.data from extrato inner join cliente on cliente.id = extrato.cliente where cliente.conta = " + conta + " and cliente.senha = " + senha;
 			ResultSet res = stm.executeQuery(sql);
 			String extrato = "";
 			while(res.next())
-				extrato += "\n---------------------------\nValor: "+res.getString(0)+"\nData: "+res.getString(1);
+				extrato += "**---------------------------**Valor: "+res.getFloat("valor")+"**Data: "+res.getString("data");
 			close();
 
 			return extrato;
 		}catch(SQLException e){}
 		return null;
 	}
-	public static String saldo(String conta, String senha){
+	public static float saldo(String conta, String senha){
 		try{
 			connect();
 			String sql = "select saldo from cliente where conta = "+conta+" and senha = "+senha;
 			ResultSet res = stm.executeQuery(sql);
 			if(res.next()){
+                                float sal = (float) res.getFloat("saldo");
 				close();
-				return res.getString(0);
+				return sal;
 			}
 		}catch(SQLException e){}
-		return null;
+		return 0;
 	}
 	public static boolean sacar(float valor, String conta, String senha){
 		try{
@@ -68,6 +70,14 @@ public class DBManager{
 			connect();
 			String sql = "update cliente set saldo = " + (_saldo - valor) + " where conta = " + conta + " and senha = " + senha;
 			stm.execute(sql);
+                        ResultSet res = stm.executeQuery("select id from cliente where conta="+conta+" and senha="+senha);
+                        Calendar c = Calendar.getInstance();
+                        String data = ""+c.YEAR+"-"+c.MONTH+"-"+c.DAY_OF_MONTH;
+                        if(res.next()){                          
+                            sql = "insert into extrato(cliente,valor,data) values("+res.getInt("id")+","+-1*valor+","+"'"+data+"')";
+                            stm.execute(sql);
+                        }
+                        
 			close();
 			return true;
 		}catch(SQLException e){}
@@ -77,17 +87,29 @@ public class DBManager{
 		try{
 			if(valor < 1)
 				return false;
-			float _saldo = Float.valueOf(saldo(conta, senha));
+                        float _saldo = (float)0.0;
+                        try{
+                            _saldo = Float.valueOf(saldo(conta, senha));
+                        }catch(Exception e){
+                            _saldo = (float)0.0;
+                        }
 			connect();
 			String sql = "update cliente set saldo = " + (_saldo + valor) + " where conta = " + conta + " and senha = " + senha;
 			stm.execute(sql);
+                        ResultSet res = stm.executeQuery("select id from cliente where conta="+conta+" and senha="+senha);
+                        Calendar c = Calendar.getInstance();
+                        String data = ""+c.YEAR+"-"+c.MONTH+"-"+c.DAY_OF_MONTH;
+                        if(res.next())
+                            stm.execute("insert into extrato(cliente,valor,data) values("+res.getInt("id")+","+valor+",'"+data+"')");
 			close();
 			return true;
 		}catch(SQLException e){}
 		return false;
 	}
 	public static boolean cadastrar(int uType, String nome, String conta, String senha){
-		String sql = "insert into " + ((uType == GERENTE) ? "gerente" : "cliente") + "(nome,conta,senha) values('"+nome+"',"+conta+","+senha+",1)";
+            if(existes(conta))
+                    return false;
+		String sql = "insert into " + ((uType == GERENTE) ? "gerente" : "cliente") + "(nome,conta,senha, ativo) values('"+nome+"',"+conta+","+senha+",1)";
 		try{
 			connect();
 			stm.execute(sql);
@@ -97,6 +119,8 @@ public class DBManager{
 		return false;
 	}
 	public static boolean inativar(String conta){
+            if(!existes(conta))
+                    return false;
 		try{
 			connect();
 			String sql = "update cliente set ativo = 0 where conta = " + conta;
@@ -106,6 +130,8 @@ public class DBManager{
 		return false;
 	}
 	public static boolean ativar(String conta){
+                if(!existes(conta))
+                    return false;
 		try{
 			connect();
 			String sql = "update cliente set ativo = 1 where conta = " + conta;
@@ -121,11 +147,26 @@ public class DBManager{
 			ResultSet res = stm.executeQuery(sql);
 			sql = "";
 			while(res.next()){
-				sql += res.getString(0) + " | " + res.getString(2) + " | " + (res.getString(3).equals("1") ? "+" : "-")+"\n";
+				sql += res.getInt("id") + " | " + res.getString("nome") + " | " + (res.getInt("ativo") == 1 ? "+" : "-")+"**";
 			}
 			close();
+                        System.err.print(sql);
 			return sql;
 		}catch(SQLException e){}
 		return null;
 	}
+        
+        public static boolean existes(String conta){
+            try{
+                connect();
+                String sql = "select * from cliente where conta = "+conta;
+                ResultSet res = stm.executeQuery(sql);
+                if(res.next()){
+                    boolean ret = true;
+                    close();
+                    return ret;
+                }
+            }catch(SQLException err){}
+            return false;
+        }
 }

@@ -64,17 +64,20 @@ public class Caixa{
 						System.out.print("Senha: ");
 						out.println(scan.nextLine());
 						break;
+                                        default:
+                                                System.out.println("");
 				}
 
-				while(in.hasNextLine()){
+				//while(in.hasNextLine()){
 					ac = in.nextLine();
+                                        ac = ac.replace("**", "\n");
 					if(ac.equals("-"))
 						System.out.println("Erro ao efetuar a ação");
 					else if(ac.equals("+"))
 						System.out.println("Ação efetuada com sucesso!");
 					else
 						System.out.println(ac);
-				}
+				//}
 			}
 			conn.close();
 		}

@@ -70,9 +70,11 @@ class CaixaThread implements Runnable{
 						}catch(Exception e){send("-");}
 						break;
 					case "sair":
+                                                send("+");
 						ativo = false;
 						break;
 					default:
+                                                send("-");
 						break;
 				}
 			}
@@ -116,7 +118,7 @@ class ControleThread implements Runnable{
 					case "caixas":
 						try{
 							for(int x=0;x<ServerCliente.caixas.size();x++)
-								caixas += ""+ServerCliente.caixas.get(x).numero+"\n";
+								caixas += ""+ServerCliente.caixas.get(x).numero+" "+(ServerCliente.caixas.get(x).ativo ? "+" : "-") +"**";
 							send(caixas);
 						}catch(IOException e){send("-");}
 						break;
@@ -166,8 +168,11 @@ class ControleThread implements Runnable{
 						}catch(IOException e){send("-");}
 						break;
 					case "sair":
+                                                send("+");
+                                                ativo =false;
 						break;
 					default:
+                                                send("-");
 						break;
 				}
 			}
@@ -197,11 +202,11 @@ class ServerCliente implements Runnable{
 		}
 	}
 	public static boolean close(String caixa){
-		ServerCliente.caixas.get(Integer.valueOf(caixa)).ativo = false;
+		ServerCliente.caixas.get(Integer.valueOf(caixa)-1).ativo = false;
 		return true;
 	}
 	public static boolean open(String caixa){
-		ServerCliente.caixas.get(Integer.valueOf(caixa)).ativo = true;
+		ServerCliente.caixas.get(Integer.valueOf(caixa)-1).ativo = true;
 		return true;
 	}
 }
